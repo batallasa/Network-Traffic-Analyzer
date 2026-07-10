@@ -32,6 +32,11 @@ startTime = datetime.now()
 
 
 def handle_packet(packet):
+    ip_layer = packet[IP]
+    src_ip = ip_layer.src
+    dst_ip = ip.layer.dst
+
+    talkers[src_ip] +=1
     pass
 
 def summary():
