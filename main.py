@@ -55,6 +55,31 @@ def handle_packet(packet):
         tcp_layer = packet[TCP]
         src_port, dst_port  = tcp_layer.sport, tcp_layer.dport
         port_scan_tracker[src_ip].add(dst_port)
+
+        if len(port_scan_tracker[src_ip]) == 15:
+            print(f"Possible port scan from {src_ip}"
+                f" {len(port_scan_tracker[src_ip])} different ports so far" )
+        
+        note = ""
+        if src_port == 80 or dst_port == 80:
+            note = "   (HTTP -- Unencrypted)"
+        elif src_port == 21 or dst_port == 21:
+            note = "   (FTP -- Unencrypted, avoid on nontrusted networks)"
+        elif src_port == 23 or dst_port == 23:
+            note = "   (Telnet -- Unencrypted, intentionally insecure)"
+
+        print( f"[TCP]   {src_ip}:{src_port}  ->  {dst_ip}:{dst_port} {note}")
+
+    elif packet.haslayer(UDP):
+        prot_name = 'UDP'
+        udp_layer = packet[UDP]
+        print(f"[UDP]   {src_ip}:{udp_layer.sport}  ->  {dst_ip}:{udp_layer.dport}")
+    
+    else:
+        prot_name = 'IP-OTHER'
+        print(f"[IP]   {src_ip}  ->  {dst_ip} (protocol #{ip_layer.proto})")
+    
+    protocol_count[prot_name] += 1
     pass
 
 def summary():
