@@ -71,7 +71,7 @@ def handle_packet(packet):
         print( f"[TCP]   {src_ip}:{src_port}  ->  {dst_ip}:{dst_port} {note}")
 
     elif packet.haslayer(UDP):
-        prot_name = 'UDP'
+        prot_name = 'UDP'   
         udp_layer = packet[UDP]
         print(f"[UDP]   {src_ip}:{udp_layer.sport}  ->  {dst_ip}:{udp_layer.dport}")
     
@@ -80,7 +80,7 @@ def handle_packet(packet):
         print(f"[IP]   {src_ip}  ->  {dst_ip} (protocol #{ip_layer.proto})")
     
     protocol_count[prot_name] += 1
-    pass
+
 
 def summary():
     '''Print summary of traffic analysis'''
