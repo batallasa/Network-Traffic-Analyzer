@@ -71,9 +71,9 @@ def handle_packet(packet):
         print( f"[TCP]   {src_ip}:{src_port}  ->  {dst_ip}:{dst_port} {note}")
 
     elif packet.haslayer(UDP):
-        prot_name = 'UDP'   
+        prot_name = 'UDP'
         udp_layer = packet[UDP]
-        print(f"[UDP]   {src_ip}:{udp_layer.sport}  ->  {dst_ip}:{udp_layer.dport}")
+        print(f"[UDP]   {src_ip}:{udp_layer.sport}  ->  {dst_ip}:{udp_layer.dport}")v
     
     else:
         prot_name = 'IP-OTHER'
@@ -82,14 +82,38 @@ def handle_packet(packet):
     protocol_count[prot_name] += 1
 
 
-def summary():
+def print_summary():
     '''Print summary of traffic analysis'''
     elapsed = (datetime.now() - start_time).total_seconds()
+
+    print("\n" + "-" * 50)
+    print("CAPTURE SUMMARY")
+    print("-" * 50)
+    print(f"Duration:        {elapsed:.1f} seconds")
+    print(f"Total packets:   {len(captured_packets)}")
+
+    print("\nPacket Breakdown:")
+    for protocol, count in protocol_counts.most_common():
+        print(f"    {protocol:<10}  {count}")
+    
+    print("\nTop 5 talkers (by source IP)")
+    for ip, count in talkers.most_common(5):
+        print(f"    {ip:<16}  {count} packets")
+
+    scanners = {ip: ports for ip, ports in port_scan_tracker.items() if len(ports) >= 15}
+    
     pass
 
 
 def main():
     global startTime
+
+    parser = argparse.ArgumentParser(
+        description="Network traffic analyzer (Scapy-based).")
+
+    parser.addargument("-i", "--interface", default=None,
+        help="Network interface to sniff on (e.g. eth0, wlan0, en0). "
+             "Default: Scapy picks automatically.")
     pass
 
 if __name__ == "__main__":
